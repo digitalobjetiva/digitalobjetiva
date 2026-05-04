@@ -31,22 +31,56 @@
         #loginOverlay {
             position: fixed;
             inset: 0;
-            background: #0f172a;
+            background: radial-gradient(circle at top right, #0ea5e9, #0f172a);
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .login-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 2rem;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
         }
+
+        .login-card h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-card p.subtitle {
+            color: #64748b;
+            margin-bottom: 2.5rem;
+            font-size: 0.95rem;
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input { width: 100%; padding-right: 3rem; }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 5px;
+        }
+        .toggle-password:hover { color: var(--primary); }
 
         /* --- SIDEBAR --- */
         .sidebar {
@@ -167,18 +201,27 @@
     <!-- OVERLAY DE LOGIN -->
     <div id="loginOverlay">
         <div class="login-card">
-            <img src="Logo/logodo.png" alt="Logo" style="height: 60px; margin-bottom: 1.5rem;">
-            <h2 style="margin-bottom: 2rem;">Acesso Restrito</h2>
+            <img src="Logo/logodo.png" alt="Logo" style="height: 70px; margin-bottom: 1.5rem;">
+            <h2>Gestão Objetiva</h2>
+            <p class="subtitle">Acesso restrito a colaboradores</p>
+            
             <form id="loginForm">
                 <div class="form-group">
                     <input type="text" id="loginEmail" placeholder="Usuário ou Email" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="loginPass" placeholder="Senha" required>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPass" placeholder="Sua senha secreta" required>
+                        <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">ENTRAR NO SISTEMA</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                    ENTRAR NO SISTEMA <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </form>
-            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #64748b;">ERP Corporativo - Digital Objetiva</p>
+            <p style="margin-top: 2rem; font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
+                &copy; 2026 Digital Objetiva
+            </p>
         </div>
     </div>
 
@@ -285,6 +328,18 @@
         });
 
         function logout() { localStorage.removeItem('objetiva_user'); location.reload(); }
+
+        function togglePassword() {
+            const passInput = document.getElementById('loginPass');
+            const icon = document.querySelector('.toggle-password');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
 
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
