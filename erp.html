@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Premium - Digital Objetiva</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary: #0ea5e9;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #0f172a;
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-logo img {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+            color: #94a3b8;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--primary);
+        }
+
+        /* Tabs/Views */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* Tables & Forms */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { font-weight: 600; color: var(--secondary); background: #f8fafc; }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .status-novo { background: #dcfce7; color: #166534; }
+        .status-proposta { background: #fef9c3; color: #854d0e; }
+        .status-finalizado { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="Logo/logodo.png" alt="Logo">
+            <span style="font-size: 1.2rem; font-weight: 800;">OBJETIVA ERP</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="showView('dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
+            <li class="nav-item" onclick="showView('leads')"><i class="fa-solid fa-users-viewfinder"></i> Leads</li>
+            <li class="nav-item" onclick="showView('atendimentos')"><i class="fa-solid fa-handshake"></i> Atendimentos</li>
+            <li class="nav-item" onclick="showView('catalogo')"><i class="fa-solid fa-layer-group"></i> Catálogo</li>
+        </ul>
+        <div class="nav-item" onclick="window.location.href='/'">
+            <i class="fa-solid fa-arrow-left"></i> Sair do Painel
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard" class="view active">
+            <div class="header-actions">
+                <h1>Dashboard de Faturamento</h1>
+                <button class="btn btn-primary" onclick="initSetup()"><i class="fa-solid fa-sync"></i> Atualizar Sistema</button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                    <div>
+                        <small>Total Faturado</small>
+                        <div id="statTotal" style="font-size: 1.5rem; font-weight: 800;">R$ 0,00</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-color: var(--success);">
+                    <div class="stat-icon" style="color: var(--success); background: rgba(34, 197, 94, 0.1);"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div>
+                        <small>Este Mês</small>
+                        <div id="statMes" style="font-size: 1.5rem; font-weight: 800;">R$ 0,00</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-color: var(--warning);">
+                    <div class="stat-icon" style="color: var(--warning); background: rgba(245, 158, 11, 0.1);"><i class="fa-solid fa-bullseye"></i></div>
+                    <div>
+                        <small>Leads Ativos</small>
+                        <div id="statLeads" style="font-size: 1.5rem; font-weight: 800;">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="margin-top:0;">Desempenho Semestral</h2>
+                <canvas id="faturamentoChart" height="100"></canvas>
+            </div>
+        </div>
+
+        <!-- LEADS VIEW -->
+        <div id="leads" class="view">
+            <div class="header-actions">
+                <h1>Gestão de Leads</h1>
+                <button class="btn btn-success" onclick="openModal('lead')"><i class="fa-solid fa-plus"></i> Novo Lead</button>
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>WhatsApp</th>
+                            <th>Status</th>
+                            <th>Valor Est.</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leadsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ATENDIMENTOS VIEW -->
+        <div id="atendimentos" class="view">
+            <div class="header-actions">
+                <h1>Histórico de Atendimentos</h1>
+                <button class="btn btn-success" onclick="openModal('atendimento')"><i class="fa-solid fa-plus"></i> Novo Registro</button>
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Cliente</th>
+                            <th>Serviço</th>
+                            <th>Valor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="atendimentosBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CATALOGO VIEW -->
+        <div id="catalogo" class="view">
+            <div class="header-actions">
+                <h1>Catálogo de Serviços</h1>
+                <button class="btn btn-primary" onclick="openModal('catalogo')"><i class="fa-solid fa-plus"></i> Novo Serviço</button>
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Serviço</th>
+                            <th>Preço Sugerido</th>
+                        </tr>
+                    </thead>
+                    <tbody id="catalogoBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let chartInstance = null;
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if(viewId === 'dashboard') loadStats();
+            if(viewId === 'leads') loadLeads();
+            if(viewId === 'atendimentos') loadAtendimentos();
+            if(viewId === 'catalogo') loadCatalogo();
+        }
+
+        async function loadStats() {
+            const res = await fetch('/api/registros?type=stats');
+            const data = await res.json();
+            
+            document.getElementById('statTotal').innerText = `R$ ${parseFloat(data.total).toLocaleString('pt-BR')}`;
+            document.getElementById('statMes').innerText = `R$ ${parseFloat(data.mesAtual).toLocaleString('pt-BR')}`;
+            document.getElementById('statLeads').innerText = data.leadsCount;
+
+            const ctx = document.getElementById('faturamentoChart').getContext('2d');
+            if(chartInstance) chartInstance.destroy();
+            
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.grafico.map(g => g.mes),
+                    datasets: [{
+                        label: 'Faturamento Mensal',
+                        data: data.grafico.map(g => g.total),
+                        borderColor: '#0ea5e9',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)'
+                    }]
+                }
+            });
+        }
+
+        async function loadAtendimentos() {
+            const res = await fetch('/api/registros?type=atendimentos');
+            const data = await res.json();
+            const body = document.getElementById('atendimentosBody');
+            body.innerHTML = data.map(a => `
+                <tr>
+                    <td>${new Date(a.data_execucao).toLocaleDateString('pt-BR')}</td>
+                    <td>${a.cliente_nome}</td>
+                    <td>${a.servico_nome}</td>
+                    <td>R$ ${parseFloat(a.valor).toFixed(2)}</td>
+                    <td>
+                        <button class="btn" style="padding: 4px 8px;" onclick="window.open('/recibo.html?id=${a.id}')"><i class="fa-solid fa-print"></i> Recibo</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadLeads() {
+            const res = await fetch('/api/registros?type=leads');
+            const data = await res.json();
+            const body = document.getElementById('leadsBody');
+            body.innerHTML = data.map(l => `
+                <tr>
+                    <td>${l.nome}</td>
+                    <td>${l.whatsapp}</td>
+                    <td><span class="badge status-${l.status.toLowerCase().replace(' ', '')}">${l.status}</span></td>
+                    <td>R$ ${parseFloat(l.valor_estimado || 0).toFixed(2)}</td>
+                    <td>
+                        <button class="btn" style="color: var(--danger)" onclick="deleteLead(${l.id})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadCatalogo() {
+            const res = await fetch('/api/registros?type=catalogo');
+            const data = await res.json();
+            const body = document.getElementById('catalogoBody');
+            body.innerHTML = data.map(s => `
+                <tr>
+                    <td>${s.nome}</td>
+                    <td>R$ ${parseFloat(s.preco_base).toFixed(2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function initSetup() {
+            const res = await fetch('/api/registros?setup=true');
+            const data = await res.json();
+            alert(data.message);
+            loadStats();
+        }
+
+        // Modal placeholders (Simplified for demo)
+        function openModal(type) {
+            const nome = prompt("Nome:");
+            if(!nome) return;
+            
+            if(type === 'atendimento') {
+                const serv = prompt("Serviço:");
+                const val = prompt("Valor:");
+                fetch('/api/registros?type=atendimentos', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({cliente_nome: nome, servico_nome: serv, valor: val, status: 'Finalizado'})
+                }).then(() => loadAtendimentos());
+            }
+
+            if(type === 'lead') {
+                const zap = prompt("WhatsApp:");
+                const val = prompt("Valor Estimado:");
+                fetch('/api/registros?type=leads', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({nome, whatsapp: zap, valor_estimado: val, status: 'Novo'})
+                }).then(() => loadLeads());
+            }
+
+            if(type === 'catalogo') {
+                const val = prompt("Preço Base:");
+                fetch('/api/registros?type=catalogo', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({nome, preco_base: val})
+                }).then(() => loadCatalogo());
+            }
+        }
+
+        async function deleteLead(id) {
+            if(confirm("Remover este lead?")) {
+                await fetch(`/api/registros?type=leads&id=${id}`, { method: 'DELETE' });
+                loadLeads();
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

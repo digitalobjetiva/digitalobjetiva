@@ -1,0 +1,13 @@
+{
+  "name": "digitalobjetiva",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ERP Digital Objetiva",
+  "main": "index.html",
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0"
+  },
+  "devDependencies": {
+    "vercel": "latest"
+  }
+}

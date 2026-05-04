@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /tmp/
+Disallow: /private/
+
+Sitemap: https://digitalobjetiva.shop/sitemap.xml

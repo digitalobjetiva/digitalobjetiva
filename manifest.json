@@ -1,0 +1,23 @@
+{
+  "name": "Digital Objetiva | Serviços Digitais Profissionais",
+  "short_name": "Digital Objetiva",
+  "description": "Serviços digitais profissionais: sites, currículos online, suporte remoto, presença web, marketing digital e demandas administrativas.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "img/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
