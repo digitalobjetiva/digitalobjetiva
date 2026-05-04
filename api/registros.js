@@ -18,7 +18,14 @@ export default async function handler(req, res) {
       );`;
       // Criar usuários administradores
       await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Administrador', 'admin', 'objetiva123') ON CONFLICT (email) DO NOTHING;`;
-      await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Thiago Delgado', 'thiagodelgado', '52334353Tds@') ON CONFLICT (email) DO NOTHING;`;
+      
+      // Forçar atualização da senha do Thiago para garantir acesso
+      const thiagoExists = await sql`SELECT id FROM agentes WHERE email = 'thiagodelgado';`;
+      if (thiagoExists.rows.length > 0) {
+        await sql`UPDATE agentes SET senha = '52334353Tds@', ativo = TRUE WHERE email = 'thiagodelgado';`;
+      } else {
+        await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Thiago Delgado', 'thiagodelgado', '52334353Tds@');`;
+      }
 
       // Atualizar Atendimentos para incluir Agente
       await sql`CREATE TABLE IF NOT EXISTS atendimentos (
