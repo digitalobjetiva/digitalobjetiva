@@ -14,7 +14,13 @@
 
         /* --- LOGIN --- */
         #loginOverlay { position: fixed; inset: 0; background: radial-gradient(circle at top right, #0ea5e9, #0f172a); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 2.5rem; border-radius: 2rem; width: 100%; max-width: 400px; text-align: center; }
+        .login-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 3rem; border-radius: 2rem; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
+        .login-card h2 { font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; }
+        .login-card p.subtitle { color: #64748b; margin-bottom: 2.5rem; font-size: 0.95rem; }
+        .password-wrapper { position: relative; display: flex; align-items: center; }
+        .password-wrapper input { width: 100%; padding-right: 3rem; }
+        .toggle-password { position: absolute; right: 1rem; color: #94a3b8; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .toggle-password:hover { color: var(--primary); }
 
         /* --- SIDEBAR --- */
         .sidebar { width: 260px; background: var(--sidebar); color: white; display: flex; flex-direction: column; transition: 0.3s; }
@@ -39,6 +45,7 @@
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .input-group { display: flex; flex-direction: column; gap: 5px; }
         input, select, textarea { padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
         
         .btn { padding: 0.8rem 1.5rem; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
         .btn-primary { background: var(--primary); color: white; }
@@ -71,13 +78,24 @@
 
     <div id="loginOverlay">
         <div class="login-card">
-            <img src="Logo/logodo.png" alt="Logo" style="height: 60px; margin-bottom: 1.5rem;">
+            <img src="Logo/logodo.png" alt="Logo" style="height: 70px; margin-bottom: 1.5rem;">
             <h2>Gestão Objetiva</h2>
+            <p class="subtitle">Acesso restrito a colaboradores</p>
             <form id="loginForm">
-                <input type="text" id="loginEmail" placeholder="Usuário" required style="width:100%; margin-bottom:1rem;">
-                <input type="password" id="loginPass" placeholder="Senha" required style="width:100%; margin-bottom:1.5rem;">
-                <button type="submit" class="btn btn-primary" style="width:100%; justify-content: center;">ENTRAR</button>
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <input type="text" id="loginEmail" placeholder="Usuário" required style="width:100%;">
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPass" placeholder="Sua senha" required>
+                        <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content: center;">ENTRAR NO SISTEMA <i class="fa-solid fa-arrow-right"></i></button>
             </form>
+            <div style="margin-top: 1.5rem;">
+                <a href="javascript:void(0)" onclick="recoverPassword()" style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;">Esqueci minha senha</a>
+            </div>
         </div>
     </div>
 
@@ -131,7 +149,6 @@
                 </div>
             </div>
 
-            <!-- VIEW: LEADS ATUALIZADA -->
             <div id="leads" class="view">
                 <div class="card">
                     <h3>Cadastrar Nova Oportunidade (Lead)</h3>
@@ -147,10 +164,7 @@
                         <button type="submit" class="btn btn-primary" style="background:#f59e0b;"><i class="fa-solid fa-plus"></i> CADASTRAR LEAD</button>
                     </form>
                 </div>
-                <div class="card">
-                    <h3>Lista de Oportunidades</h3>
-                    <div class="table-responsive"><table><thead><tr><th>Data</th><th>Nome</th><th>WhatsApp</th><th>Expectativa</th><th>Status</th><th>Ação</th></tr></thead><tbody id="leadsTable"></tbody></table></div>
-                </div>
+                <div class="card"><h3>Lista de Oportunidades</h3><div class="table-responsive"><table><thead><tr><th>Data</th><th>Nome</th><th>WhatsApp</th><th>Expectativa</th><th>Status</th><th>Ação</th></tr></thead><tbody id="leadsTable"></tbody></table></div></div>
             </div>
 
             <div id="agentes" class="view">
@@ -183,6 +197,18 @@
 
         function logout() { localStorage.removeItem('objetiva_user'); location.reload(); }
 
+        function togglePassword() {
+            const passInput = document.getElementById('loginPass');
+            const icon = document.querySelector('.toggle-password');
+            if (passInput.type === 'password') { passInput.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); } 
+            else { passInput.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
+        }
+
+        function recoverPassword() {
+            const email = prompt("Digite seu usuário ou e-mail de acesso:");
+            if (email) alert("Uma solicitação de recuperação foi enviada para o administrador. Por favor, aguarde o contato no e-mail digitalobjetiva@outlook.com");
+        }
+
         function showView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -195,13 +221,39 @@
             if(viewId === 'agentes') loadAgentes();
         }
 
-        // SALVAR VENDA
+        // SALVAR VENDA (CORRIGIDO)
         document.getElementById('vendaForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const payload = { cliente_nome: document.getElementById('v_cliente').value, whatsapp: document.getElementById('v_zap').value, servico_nome: document.getElementById('v_servico').value, valor: document.getElementById('v_valor').value, data_execucao: document.getElementById('v_data').value, agente_id: currentUser.id };
-            const res = await fetch('/api/registros?type=atendimentos', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-            const data = await res.json();
-            if(data.id) { window.open(`/recibo.html?id=${data.id}`); e.target.reset(); document.getElementById('v_data').valueAsDate = new Date(); loadVendas(); }
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SALVANDO...';
+
+            const payload = { 
+                cliente_nome: document.getElementById('v_cliente').value, 
+                whatsapp: document.getElementById('v_zap').value, 
+                servico_nome: document.getElementById('v_servico').value, 
+                valor: document.getElementById('v_valor').value, 
+                data_execucao: document.getElementById('v_data').value, 
+                agente_id: currentUser ? currentUser.id : null 
+            };
+
+            try {
+                const res = await fetch('/api/registros?type=atendimentos', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify(payload) 
+                });
+                if (!res.ok) throw new Error('Erro ao salvar no servidor');
+                const data = await res.json();
+                if(data.id) { 
+                    window.open(`/recibo.html?id=${data.id}`); 
+                    e.target.reset(); 
+                    document.getElementById('v_data').valueAsDate = new Date(); 
+                    loadVendas(); 
+                }
+            } catch (err) { alert("ERRO NO CADASTRO: " + err.message); }
+            finally { btn.disabled = false; btn.innerHTML = originalText; }
         });
 
         // SALVAR LEAD
@@ -219,7 +271,6 @@
             document.getElementById('statCount').innerText = data.porAgente.reduce((acc, curr) => acc + parseInt(curr.quantidade), 0);
             document.getElementById('statLeads').innerText = data.leadsCount;
 
-            // Gráfico de Linha
             const ctxL = document.getElementById('mainChart').getContext('2d');
             if(window.myChartL) window.myChartL.destroy();
             window.myChartL = new Chart(ctxL, {
@@ -227,15 +278,11 @@
                 options: { responsive: true, plugins: { legend: { display: false } } }
             });
 
-            // Gráfico de Rosca (Doughnut)
             const ctxP = document.getElementById('pieChart').getContext('2d');
             if(window.myChartP) window.myChartP.destroy();
             window.myChartP = new Chart(ctxP, {
                 type: 'doughnut',
-                data: {
-                    labels: data.porAgente.map(a => a.nome),
-                    datasets: [{ data: data.porAgente.map(a => a.total), backgroundColor: ['#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6'] }]
-                },
+                data: { labels: data.porAgente.map(a => a.nome), datasets: [{ data: data.porAgente.map(a => a.total), backgroundColor: ['#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6'] }] },
                 options: { responsive: true, maintainAspectRatio: false }
             });
         }
