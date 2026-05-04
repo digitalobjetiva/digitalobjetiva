@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERP Premium - Digital Objetiva</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>ERP - Digital Objetiva</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --sidebar-width: 260px;
             --primary: #0ea5e9;
-            --secondary: #64748b;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --bg: #f1f5f9;
+            --primary-dark: #0284c7;
+            --sidebar: #0f172a;
+            --bg: #f8fafc;
             --card: #ffffff;
             --text: #1e293b;
+            --border: #e2e8f0;
         }
 
         body {
@@ -26,403 +25,348 @@
             color: var(--text);
             display: flex;
             height: 100vh;
-            overflow: hidden;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: var(--sidebar-width);
+        /* --- TELA DE LOGIN --- */
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
             background: #0f172a;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
         }
 
         .sidebar-logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2.5rem;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            padding: 0 0.5rem;
         }
 
-        .sidebar-logo img {
-            height: 40px;
-            filter: brightness(0) invert(1);
-        }
+        .sidebar-logo img { height: 45px; }
 
-        .nav-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-        }
-
+        .nav-menu { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
         .nav-item {
-            padding: 0.75rem 1rem;
+            padding: 0.85rem 1.25rem;
             margin-bottom: 0.5rem;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
             transition: all 0.2s;
             color: #94a3b8;
+            font-weight: 500;
         }
-
         .nav-item:hover, .nav-item.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
+            background: rgba(14, 165, 233, 0.15);
+            color: var(--primary);
         }
+        .nav-item.active { background: var(--primary); color: white; }
 
-        .nav-item.active {
-            border-left: 4px solid var(--primary);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex-grow: 1;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        .header-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
+        /* --- MAIN CONTENT --- */
+        .main-content { flex-grow: 1; padding: 2.5rem; overflow-y: auto; }
+        
         .card {
             background: var(--card);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
+            border-radius: 1.25rem;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
         }
 
-        .stats-grid {
+        .grid-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .stat-card {
             background: white;
             padding: 1.5rem;
-            border-radius: 1rem;
+            border-radius: 1.25rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            border-bottom: 4px solid var(--primary);
+            gap: 1.25rem;
+            border: 1px solid var(--border);
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 56px; height: 56px;
+            border-radius: 1rem;
+            display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem;
             background: rgba(14, 165, 233, 0.1);
             color: var(--primary);
         }
 
-        /* Tabs/Views */
+        /* --- FORMS & TABLES --- */
+        .form-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        input, select, textarea {
+            padding: 0.85rem;
+            border: 1.5px solid var(--border);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
+
+        .btn {
+            padding: 0.85rem 1.5rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex; align-items: center; gap: 0.75rem;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1.25rem; border-bottom: 2px solid var(--border); color: var(--secondary); font-size: 0.85rem; text-transform: uppercase; }
+        td { padding: 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+
         .view { display: none; }
         .view.active { display: block; }
 
-        /* Tables & Forms */
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { font-weight: 600; color: var(--secondary); background: #f8fafc; }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 0.5rem;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+        @media (max-width: 1024px) {
+            .sidebar { width: 80px; padding: 1.5rem 0.75rem; align-items: center; }
+            .sidebar span, .sidebar-logo span { display: none; }
+            .nav-item { justify-content: center; padding: 1rem; }
         }
-
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: var(--success); color: white; }
-
-        .badge {
-            padding: 0.25rem 0.6rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .status-novo { background: #dcfce7; color: #166534; }
-        .status-proposta { background: #fef9c3; color: #854d0e; }
-        .status-finalizado { background: #dbeafe; color: #1e40af; }
     </style>
 </head>
 <body>
+
+    <!-- OVERLAY DE LOGIN -->
+    <div id="loginOverlay">
+        <div class="login-card">
+            <img src="Logo/logodo.png" alt="Logo" style="height: 60px; margin-bottom: 1.5rem;">
+            <h2 style="margin-bottom: 2rem;">Acesso Restrito</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="text" id="loginEmail" placeholder="Usuário ou Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPass" placeholder="Senha" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">ENTRAR NO SISTEMA</button>
+            </form>
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #64748b;">ERP Corporativo - Digital Objetiva</p>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
             <img src="Logo/logodo.png" alt="Logo">
-            <span style="font-size: 1.2rem; font-weight: 800;">OBJETIVA ERP</span>
+            <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px;">DIGITAL OBJETIVA</span>
         </div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="showView('dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
-            <li class="nav-item" onclick="showView('leads')"><i class="fa-solid fa-users-viewfinder"></i> Leads</li>
-            <li class="nav-item" onclick="showView('atendimentos')"><i class="fa-solid fa-handshake"></i> Atendimentos</li>
-            <li class="nav-item" onclick="showView('catalogo')"><i class="fa-solid fa-layer-group"></i> Catálogo</li>
+            <li class="nav-item active" onclick="showView('dashboard')"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></li>
+            <li class="nav-item" onclick="showView('atendimentos')"><i class="fa-solid fa-briefcase"></i> <span>Atendimentos</span></li>
+            <li class="nav-item" onclick="showView('leads')"><i class="fa-solid fa-bullseye"></i> <span>Leads</span></li>
+            <li class="nav-item" onclick="showView('agentes')"><i class="fa-solid fa-user-group"></i> <span>Agentes</span></li>
+            <li class="nav-item" onclick="showView('relatorios')"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Relatórios</span></li>
         </ul>
-        <div class="nav-item" onclick="window.location.href='/'">
-            <i class="fa-solid fa-arrow-left"></i> Sair do Painel
+        <div class="nav-item" onclick="logout()" style="margin-top: auto; color: #ef4444;">
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
         </div>
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="main-content">
-        <!-- DASHBOARD VIEW -->
+        
+        <!-- DASHBOARD -->
         <div id="dashboard" class="view active">
-            <div class="header-actions">
-                <h1>Dashboard de Faturamento</h1>
-                <button class="btn btn-primary" onclick="initSetup()"><i class="fa-solid fa-sync"></i> Atualizar Sistema</button>
+            <div style="margin-bottom: 2.5rem;">
+                <h1 style="margin: 0; font-size: 1.8rem;">Bem-vindo ao Gestão Objetiva</h1>
+                <p style="color: #64748b; margin: 0.5rem 0 0 0;">Visão geral dos resultados da sua empresa</p>
             </div>
-            
-            <div class="stats-grid">
+
+            <div class="grid-stats">
                 <div class="stat-card">
-                    <div class="stat-icon"><i class="fa-solid fa-money-bill-trend-up"></i></div>
-                    <div>
-                        <small>Total Faturado</small>
-                        <div id="statTotal" style="font-size: 1.5rem; font-weight: 800;">R$ 0,00</div>
-                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <div><small style="color: #64748b;">Faturamento Total</small><div id="statTotal" style="font-size: 1.4rem; font-weight: 800;">R$ 0,00</div></div>
                 </div>
-                <div class="stat-card" style="border-color: var(--success);">
-                    <div class="stat-icon" style="color: var(--success); background: rgba(34, 197, 94, 0.1);"><i class="fa-solid fa-calendar-check"></i></div>
-                    <div>
-                        <small>Este Mês</small>
-                        <div id="statMes" style="font-size: 1.5rem; font-weight: 800;">R$ 0,00</div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #22c55e; background: rgba(34, 197, 94, 0.1);"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div><small style="color: #64748b;">Mês Atual</small><div id="statMes" style="font-size: 1.4rem; font-weight: 800;">R$ 0,00</div></div>
                 </div>
-                <div class="stat-card" style="border-color: var(--warning);">
-                    <div class="stat-icon" style="color: var(--warning); background: rgba(245, 158, 11, 0.1);"><i class="fa-solid fa-bullseye"></i></div>
-                    <div>
-                        <small>Leads Ativos</small>
-                        <div id="statLeads" style="font-size: 1.5rem; font-weight: 800;">0</div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #f59e0b; background: rgba(245, 158, 11, 0.1);"><i class="fa-solid fa-users"></i></div>
+                    <div><small style="color: #64748b;">Leads em Aberto</small><div id="statLeads" style="font-size: 1.4rem; font-weight: 800;">0</div></div>
                 </div>
             </div>
 
             <div class="card">
-                <h2 style="margin-top:0;">Desempenho Semestral</h2>
-                <canvas id="faturamentoChart" height="100"></canvas>
+                <h2 style="margin-top: 0; font-size: 1.2rem;">Evolução de Faturamento</h2>
+                <canvas id="mainChart" height="100"></canvas>
             </div>
         </div>
 
-        <!-- LEADS VIEW -->
-        <div id="leads" class="view">
-            <div class="header-actions">
-                <h1>Gestão de Leads</h1>
-                <button class="btn btn-success" onclick="openModal('lead')"><i class="fa-solid fa-plus"></i> Novo Lead</button>
-            </div>
-            <div class="card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>WhatsApp</th>
-                            <th>Status</th>
-                            <th>Valor Est.</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leadsBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ATENDIMENTOS VIEW -->
+        <!-- ATENDIMENTOS -->
         <div id="atendimentos" class="view">
-            <div class="header-actions">
-                <h1>Histórico de Atendimentos</h1>
-                <button class="btn btn-success" onclick="openModal('atendimento')"><i class="fa-solid fa-plus"></i> Novo Registro</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+                <h1>Registrar Serviço</h1>
+                <button class="btn btn-primary" onclick="openServiceModal()"><i class="fa-solid fa-plus"></i> Novo Atendimento</button>
             </div>
             <div class="card">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Cliente</th>
-                            <th>Serviço</th>
-                            <th>Valor</th>
-                            <th>Ações</th>
-                        </tr>
+                        <tr><th>Data</th><th>Cliente</th><th>Serviço</th><th>Agente</th><th>Valor</th><th>Ação</th></tr>
                     </thead>
                     <tbody id="atendimentosBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- CATALOGO VIEW -->
-        <div id="catalogo" class="view">
-            <div class="header-actions">
-                <h1>Catálogo de Serviços</h1>
-                <button class="btn btn-primary" onclick="openModal('catalogo')"><i class="fa-solid fa-plus"></i> Novo Serviço</button>
+        <!-- AGENTES -->
+        <div id="agentes" class="view">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+                <h1>Colaboradores</h1>
+                <button class="btn btn-primary" onclick="openAgentModal()"><i class="fa-solid fa-user-plus"></i> Novo Agente</button>
             </div>
             <div class="card">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Serviço</th>
-                            <th>Preço Sugerido</th>
-                        </tr>
+                        <tr><th>Nome</th><th>Email</th><th>Status</th></tr>
                     </thead>
-                    <tbody id="catalogoBody"></tbody>
+                    <tbody id="agentesBody"></tbody>
                 </table>
             </div>
         </div>
+
     </main>
 
     <script>
-        let chartInstance = null;
+        let currentUser = JSON.parse(localStorage.getItem('objetiva_user'));
+        if(currentUser) document.getElementById('loginOverlay').style.display = 'none';
 
-        function showView(viewId) {
+        // LOGIN
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const res = await fetch('/api/registros?login=true', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value})
+            });
+            const data = await res.json();
+            if(data.success) {
+                localStorage.setItem('objetiva_user', JSON.stringify(data.user));
+                location.reload();
+            } else { alert("Acesso negado!"); }
+        });
+
+        function logout() { localStorage.removeItem('objetiva_user'); location.reload(); }
+
+        function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
+            document.getElementById(id).classList.add('active');
             event.currentTarget.classList.add('active');
-            
-            if(viewId === 'dashboard') loadStats();
-            if(viewId === 'leads') loadLeads();
-            if(viewId === 'atendimentos') loadAtendimentos();
-            if(viewId === 'catalogo') loadCatalogo();
+            if(id === 'dashboard') loadStats();
+            if(id === 'atendimentos') loadAtendimentos();
+            if(id === 'agentes') loadAgentes();
         }
 
         async function loadStats() {
             const res = await fetch('/api/registros?type=stats');
             const data = await res.json();
-            
             document.getElementById('statTotal').innerText = `R$ ${parseFloat(data.total).toLocaleString('pt-BR')}`;
             document.getElementById('statMes').innerText = `R$ ${parseFloat(data.mesAtual).toLocaleString('pt-BR')}`;
             document.getElementById('statLeads').innerText = data.leadsCount;
 
-            const ctx = document.getElementById('faturamentoChart').getContext('2d');
-            if(chartInstance) chartInstance.destroy();
-            
-            chartInstance = new Chart(ctx, {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: data.grafico.map(g => g.mes),
-                    datasets: [{
-                        label: 'Faturamento Mensal',
-                        data: data.grafico.map(g => g.total),
-                        borderColor: '#0ea5e9',
-                        tension: 0.4,
-                        fill: true,
-                        backgroundColor: 'rgba(14, 165, 233, 0.1)'
-                    }]
-                }
+                    datasets: [{ label: 'Receita', data: data.grafico.map(g => g.total), borderColor: '#0ea5e9', tension: 0.4, fill: true, backgroundColor: 'rgba(14, 165, 233, 0.05)' }]
+                },
+                options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
         }
 
         async function loadAtendimentos() {
             const res = await fetch('/api/registros?type=atendimentos');
             const data = await res.json();
-            const body = document.getElementById('atendimentosBody');
-            body.innerHTML = data.map(a => `
+            document.getElementById('atendimentosBody').innerHTML = data.map(a => `
                 <tr>
                     <td>${new Date(a.data_execucao).toLocaleDateString('pt-BR')}</td>
                     <td>${a.cliente_nome}</td>
                     <td>${a.servico_nome}</td>
+                    <td><span style="color:var(--primary); font-weight:600;">${a.agente_nome || 'Sistema'}</span></td>
                     <td>R$ ${parseFloat(a.valor).toFixed(2)}</td>
-                    <td>
-                        <button class="btn" style="padding: 4px 8px;" onclick="window.open('/recibo.html?id=${a.id}')"><i class="fa-solid fa-print"></i> Recibo</button>
-                    </td>
+                    <td><button class="btn" style="padding: 5px 10px; font-size:0.8rem;" onclick="window.open('/recibo.html?id=${a.id}')"><i class="fa-solid fa-print"></i></button></td>
                 </tr>
             `).join('');
         }
 
-        async function loadLeads() {
-            const res = await fetch('/api/registros?type=leads');
+        async function loadAgentes() {
+            const res = await fetch('/api/registros?type=agentes');
             const data = await res.json();
-            const body = document.getElementById('leadsBody');
-            body.innerHTML = data.map(l => `
+            document.getElementById('agentesBody').innerHTML = data.map(ag => `
                 <tr>
-                    <td>${l.nome}</td>
-                    <td>${l.whatsapp}</td>
-                    <td><span class="badge status-${l.status.toLowerCase().replace(' ', '')}">${l.status}</span></td>
-                    <td>R$ ${parseFloat(l.valor_estimado || 0).toFixed(2)}</td>
-                    <td>
-                        <button class="btn" style="color: var(--danger)" onclick="deleteLead(${l.id})"><i class="fa-solid fa-trash"></i></button>
-                    </td>
+                    <td>${ag.nome}</td>
+                    <td>${ag.email}</td>
+                    <td><span style="color:${ag.ativo ? '#22c55e' : '#ef4444'}">${ag.ativo ? 'Ativo' : 'Inativo'}</span></td>
                 </tr>
             `).join('');
         }
 
-        async function loadCatalogo() {
-            const res = await fetch('/api/registros?type=catalogo');
-            const data = await res.json();
-            const body = document.getElementById('catalogoBody');
-            body.innerHTML = data.map(s => `
-                <tr>
-                    <td>${s.nome}</td>
-                    <td>R$ ${parseFloat(s.preco_base).toFixed(2)}</td>
-                </tr>
-            `).join('');
+        // Modais rápidos (Simplificados para produção)
+        function openServiceModal() {
+            const cliente = prompt("Nome do Cliente:");
+            const serv = prompt("Serviço:");
+            const val = prompt("Valor:");
+            if(!cliente || !serv || !val) return;
+            fetch('/api/registros?type=atendimentos', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({cliente_nome: cliente, servico_nome: serv, valor: val, agente_id: currentUser.id})
+            }).then(() => loadAtendimentos());
         }
 
-        async function initSetup() {
-            const res = await fetch('/api/registros?setup=true');
-            const data = await res.json();
-            alert(data.message);
-            loadStats();
+        function openAgentModal() {
+            const nome = prompt("Nome do Agente:");
+            const email = prompt("Email (Login):");
+            const senha = prompt("Senha:");
+            if(!nome || !email || !senha) return;
+            fetch('/api/registros?type=agentes', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({nome, email, senha})
+            }).then(() => loadAgentes());
         }
 
-        // Modal placeholders (Simplified for demo)
-        function openModal(type) {
-            const nome = prompt("Nome:");
-            if(!nome) return;
-            
-            if(type === 'atendimento') {
-                const serv = prompt("Serviço:");
-                const val = prompt("Valor:");
-                fetch('/api/registros?type=atendimentos', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({cliente_nome: nome, servico_nome: serv, valor: val, status: 'Finalizado'})
-                }).then(() => loadAtendimentos());
-            }
-
-            if(type === 'lead') {
-                const zap = prompt("WhatsApp:");
-                const val = prompt("Valor Estimado:");
-                fetch('/api/registros?type=leads', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({nome, whatsapp: zap, valor_estimado: val, status: 'Novo'})
-                }).then(() => loadLeads());
-            }
-
-            if(type === 'catalogo') {
-                const val = prompt("Preço Base:");
-                fetch('/api/registros?type=catalogo', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({nome, preco_base: val})
-                }).then(() => loadCatalogo());
-            }
-        }
-
-        async function deleteLead(id) {
-            if(confirm("Remover este lead?")) {
-                await fetch(`/api/registros?type=leads&id=${id}`, { method: 'DELETE' });
-                loadLeads();
-            }
-        }
-
-        loadStats();
+        if(currentUser) loadStats();
     </script>
 </body>
 </html>
