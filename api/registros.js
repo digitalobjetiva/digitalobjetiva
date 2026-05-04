@@ -16,8 +16,9 @@ export default async function handler(req, res) {
       await sql`CREATE TABLE IF NOT EXISTS agentes (
         id SERIAL PRIMARY KEY, nome TEXT NOT NULL, email TEXT UNIQUE, senha TEXT NOT NULL, ativo BOOLEAN DEFAULT TRUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );`;
-      // Criar agente administrador inicial se não existir
+      // Criar usuários administradores
       await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Administrador', 'admin', 'objetiva123') ON CONFLICT (email) DO NOTHING;`;
+      await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Thiago Delgado', 'thiagodelgado', '52334353Tds@') ON CONFLICT (email) DO NOTHING;`;
 
       // Atualizar Atendimentos para incluir Agente
       await sql`CREATE TABLE IF NOT EXISTS atendimentos (
