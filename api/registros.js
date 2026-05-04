@@ -68,7 +68,7 @@ export default async function handler(req, res) {
         const { cliente_nome, whatsapp, servico_nome, valor, data_execucao, status, agente_id } = req.body;
         const result = await sql`
           INSERT INTO atendimentos (cliente_nome, whatsapp, servico_nome, valor, data_execucao, status, agente_id)
-          VALUES (${cliente_nome}, ${whatsapp}, ${servico_nome}, ${valor}, ${data_execucao}, ${status}, ${agente_id})
+          VALUES (${cliente_nome}, ${whatsapp}, ${servico_nome}, ${valor}, ${data_execucao || new Date().toISOString().split('T')[0]}, ${status || 'Finalizado'}, ${agente_id})
           RETURNING *;
         `;
         return res.status(201).json(result.rows[0]);
