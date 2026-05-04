@@ -16,6 +16,10 @@ export default async function handler(req, res) {
       await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Thiago Delgado', 'thiagodelgado', '52334353Tds@') ON CONFLICT (email) DO NOTHING;`;
       await sql`UPDATE agentes SET senha = '52334353Tds@', ativo = TRUE WHERE email = 'thiagodelgado';`;
       await sql`CREATE TABLE IF NOT EXISTS atendimentos (id SERIAL PRIMARY KEY, cliente_nome TEXT NOT NULL, whatsapp TEXT, servico_nome TEXT, valor DECIMAL(10,2), status TEXT DEFAULT 'Finalizado', data_execucao DATE DEFAULT CURRENT_DATE, agente_id INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);`;
+      // Garantir que a coluna agente_id exista caso a tabela já tenha sido criada anteriormente
+      try { await sql`ALTER TABLE atendimentos ADD COLUMN IF NOT EXISTS agente_id INTEGER;`; } catch(e) {}
+      try { await sql`ALTER TABLE atendimentos ADD COLUMN IF NOT EXISTS whatsapp TEXT;`; } catch(e) {}
+      
       await sql`CREATE TABLE IF NOT EXISTS leads (id SERIAL PRIMARY KEY, nome TEXT NOT NULL, whatsapp TEXT, status TEXT DEFAULT 'Novo', notas TEXT, valor_estimado DECIMAL(10,2), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);`;
       return res.status(200).json({ message: "ERP Premium configurado!" });
     }
