@@ -219,6 +219,9 @@
                     ENTRAR NO SISTEMA <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
+            <div style="margin-top: 1.5rem;">
+                <a href="javascript:void(0)" onclick="recoverPassword()" style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;">Esqueci minha senha</a>
+            </div>
             <p style="margin-top: 2rem; font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
                 &copy; 2026 Digital Objetiva
             </p>
@@ -338,6 +341,14 @@
             } else {
                 passInput.type = 'password';
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function recoverPassword() {
+            const email = prompt("Digite seu usuário ou e-mail de acesso:");
+            if (email) {
+                alert("Uma solicitação de recuperação foi enviada para o administrador. Por favor, aguarde o contato no e-mail digitalobjetiva@outlook.com");
+                // Aqui poderíamos integrar com um serviço de e-mail como Resend ou SendGrid futuramente
             }
         }
 

@@ -16,16 +16,11 @@ export default async function handler(req, res) {
       await sql`CREATE TABLE IF NOT EXISTS agentes (
         id SERIAL PRIMARY KEY, nome TEXT NOT NULL, email TEXT UNIQUE, senha TEXT NOT NULL, ativo BOOLEAN DEFAULT TRUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );`;
-      // Criar usuários administradores
-      await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Administrador', 'admin', 'objetiva123') ON CONFLICT (email) DO NOTHING;`;
       
-      // Forçar atualização da senha do Thiago para garantir acesso
-      const thiagoExists = await sql`SELECT id FROM agentes WHERE email = 'thiagodelgado';`;
-      if (thiagoExists.rows.length > 0) {
-        await sql`UPDATE agentes SET senha = '52334353Tds@', ativo = TRUE WHERE email = 'thiagodelgado';`;
-      } else {
-        await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Thiago Delgado', 'thiagodelgado', '52334353Tds@');`;
-      }
+      // Manter apenas thiagodelgado como administrador principal
+      await sql`DELETE FROM agentes WHERE email = 'admin';`;
+      await sql`INSERT INTO agentes (nome, email, senha) VALUES ('Thiago Delgado', 'thiagodelgado', '52334353Tds@') ON CONFLICT (email) DO NOTHING;`;
+      await sql`UPDATE agentes SET senha = '52334353Tds@', ativo = TRUE WHERE email = 'thiagodelgado';`;
 
       // Atualizar Atendimentos para incluir Agente
       await sql`CREATE TABLE IF NOT EXISTS atendimentos (
