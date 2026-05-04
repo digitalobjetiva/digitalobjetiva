@@ -170,12 +170,7 @@
 
             <div id="agentes" class="view">
                 <div class="card"><h3>Cadastrar Colaborador</h3><form id="agenteForm" class="form-row"><input type="text" id="ag_nome" placeholder="Nome" required><input type="text" id="ag_email" placeholder="Usuário/Login" required><input type="password" id="ag_senha" placeholder="Senha" required><button type="submit" class="btn btn-primary">ADICIONAR</button></form></div>
-                <div class="card">
-                    <table>
-                        <thead><tr><th>Nome</th><th>Login</th><th>Status</th></tr></thead>
-                        <tbody id="agentesTable"></tbody>
-                    </table>
-                </div>
+                <div class="card"><table><thead><tr><th>Nome</th><th>Login</th><th>Status</th></tr></thead><tbody id="agentesTable"></tbody></table></div>
             </div>
 
             <div id="relatorios" class="view">
@@ -194,6 +189,7 @@
                                     <th>Valor</th>
                                     <th>Agente</th>
                                     <th>Status</th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="relatoriosTable"></tbody>
@@ -261,13 +257,7 @@
             try {
                 const res = await fetch('/api/registros?type=atendimentos', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
                 const data = await res.json();
-                if(data.id) { 
-                    window.open(`/recibo.html?id=${data.id}`); 
-                    e.target.reset(); 
-                    document.getElementById('v_data').valueAsDate = new Date(); 
-                    loadVendas(); 
-                    loadRelatorios();
-                }
+                if(data.id) { window.open(`/recibo.html?id=${data.id}`); e.target.reset(); document.getElementById('v_data').valueAsDate = new Date(); loadVendas(); loadRelatorios(); }
             } catch (err) { alert("ERRO: " + err.message); }
             finally { btn.disabled = false; btn.innerHTML = originalText; }
         });
@@ -301,21 +291,19 @@
 
         async function loadRelatorios() {
             const table = document.getElementById('relatoriosTable');
-            table.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando dados...</td></tr>';
-            
+            table.innerHTML = '<tr><td colspan="7" style="text-align:center;">Carregando dados...</td></tr>';
             const res = await fetch('/api/registros?type=atendimentos');
             const data = await res.json();
-            
-            table.innerHTML = data.map(v => `
-                <tr>
-                    <td>${new Date(v.data_execucao).toLocaleDateString('pt-BR')}</td>
-                    <td><b>${v.cliente_nome}</b></td>
-                    <td>${v.servico_nome}</td>
-                    <td>R$ ${parseFloat(v.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td><span style="color:var(--primary); font-weight:600;">${v.agente_nome || 'Digital Objetiva'}</span></td>
-                    <td><span style="background:#dcfce7; color:#166534; padding:4px 8px; border-radius:6px; font-size:0.8rem;">${v.status || 'Finalizado'}</span></td>
-                </tr>
-            `).join('');
+            table.innerHTML = data.map(v => {
+                const isDevolvido = v.status === 'Devolvido';
+                return `<tr style="${isDevolvido ? 'opacity: 0.6; background: #fff1f2;' : ''}"><td>${new Date(v.data_execucao).toLocaleDateString('pt-BR')}</td><td><b>${v.cliente_nome}</b></td><td>${v.servico_nome}</td><td style="${isDevolvido ? 'text-decoration: line-through;' : ''}">R$ ${parseFloat(v.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td><td><span style="color:var(--primary); font-weight:600;">${v.agente_nome || 'Digital Objetiva'}</span></td><td><span style="background:${isDevolvido ? '#ef4444' : '#dcfce7'}; color:${isDevolvido ? '#fff' : '#166534'}; padding:4px 8px; border-radius:6px; font-size:0.8rem;">${v.status || 'Finalizado'}</span></td><td>${!isDevolvido ? `<button onclick="estornarVenda(${v.id}, '${v.cliente_nome}')" title="Estornar Valor" style="cursor:pointer; border:none; background:none; color:#ef4444;"><i class="fa-solid fa-rotate-left"></i> Estornar</button>` : '---'}</td></tr>`
+            }).join('');
+        }
+
+        async function estornarVenda(id, nome) {
+            if(!confirm(`Tem certeza que deseja estornar o valor de ${nome}? Isso removerá o lucro do Dashboard.`)) return;
+            const res = await fetch('/api/registros?type=atendimentos', { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id, status: 'Devolvido' }) });
+            if(res.ok) { alert("Venda estornada com sucesso!"); loadRelatorios(); if(document.getElementById('dashboard').classList.contains('active')) loadStats(); }
         }
 
         async function loadLeads() {
