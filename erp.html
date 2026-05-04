@@ -41,6 +41,7 @@
         .card { background: white; border-radius: 15px; padding: 1.5rem; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
         .grid-charts { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+        .chart-container { position: relative; height: 300px; width: 100%; }
         
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .input-group { display: flex; flex-direction: column; gap: 5px; }
@@ -101,9 +102,9 @@
 
     <aside class="sidebar">
         <div class="sidebar-header"><img src="Logo/logodo.png" alt="Logo"><b style="font-size: 0.9rem;">DIGITAL OBJETIVA</b></div>
-        <div class="menu-group"><div class="menu-title">Principal</div><div class="nav-item active" onclick="showView('dashboard')"><i class="fa-solid fa-house"></i> <span>Início</span></div></div>
-        <div class="menu-group"><div class="menu-title">Operacional</div><div class="nav-item" onclick="showView('vendas')"><i class="fa-solid fa-cart-plus"></i> <span>Nova Venda</span></div><div class="nav-item" onclick="showView('leads')"><i class="fa-solid fa-bullseye"></i> <span>Leads</span></div></div>
-        <div class="menu-group"><div class="menu-title">Administrativo</div><div class="nav-item" onclick="showView('relatorios')"><i class="fa-solid fa-chart-line"></i> <span>Relatórios</span></div><div class="nav-item" onclick="showView('agentes')"><i class="fa-solid fa-user-gear"></i> <span>Equipe</span></div></div>
+        <div class="menu-group"><div class="menu-title">Principal</div><div class="nav-item active" onclick="showView('dashboard', this)"><i class="fa-solid fa-house"></i> <span>Início</span></div></div>
+        <div class="menu-group"><div class="menu-title">Operacional</div><div class="nav-item" onclick="showView('vendas', this)"><i class="fa-solid fa-cart-plus"></i> <span>Nova Venda</span></div><div class="nav-item" onclick="showView('leads', this)"><i class="fa-solid fa-bullseye"></i> <span>Leads</span></div></div>
+        <div class="menu-group"><div class="menu-title">Administrativo</div><div class="nav-item" onclick="showView('relatorios', this)"><i class="fa-solid fa-chart-line"></i> <span>Relatórios</span></div><div class="nav-item" onclick="showView('agentes', this)"><i class="fa-solid fa-user-gear"></i> <span>Equipe</span></div></div>
         <div class="sidebar-footer" style="margin-top:auto; padding:1.5rem;"><div class="nav-item" onclick="logout()" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i> <span>Sair</span></div></div>
     </aside>
 
@@ -122,8 +123,8 @@
                     <div class="card" style="border-left: 4px solid #f59e0b;"><small style="color: #64748b;">Leads Pendentes</small><div id="statLeads" style="font-size: 1.8rem; font-weight: 900; margin-top: 5px;">0</div></div>
                 </div>
                 <div class="grid-charts">
-                    <div class="card"><h3 style="margin-top:0;">Evolução Semestral</h3><canvas id="mainChart" height="150"></canvas></div>
-                    <div class="card" style="text-align:center;"><h3 style="margin-top:0;">Mix de Vendas</h3><canvas id="pieChart" height="250"></canvas></div>
+                    <div class="card"><h3 style="margin-top:0;">Evolução Semestral</h3><div class="chart-container"><canvas id="mainChart"></canvas></div></div>
+                    <div class="card" style="text-align:center;"><h3 style="margin-top:0;">Mix de Vendas</h3><div class="chart-container"><canvas id="pieChart"></canvas></div></div>
                 </div>
             </div>
 
@@ -209,54 +210,32 @@
             if (email) alert("Uma solicitação de recuperação foi enviada para o administrador. Por favor, aguarde o contato no e-mail digitalobjetiva@outlook.com");
         }
 
-        function showView(viewId) {
+        function showView(viewId, element) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            document.getElementById('viewTitle').innerText = event.currentTarget.innerText;
+            if(element) { element.classList.add('active'); document.getElementById('viewTitle').innerText = element.innerText; }
             if(viewId === 'dashboard') loadStats();
             if(viewId === 'vendas') loadVendas();
             if(viewId === 'leads') loadLeads();
             if(viewId === 'agentes') loadAgentes();
         }
 
-        // SALVAR VENDA (CORRIGIDO)
         document.getElementById('vendaForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SALVANDO...';
-
-            const payload = { 
-                cliente_nome: document.getElementById('v_cliente').value, 
-                whatsapp: document.getElementById('v_zap').value, 
-                servico_nome: document.getElementById('v_servico').value, 
-                valor: document.getElementById('v_valor').value, 
-                data_execucao: document.getElementById('v_data').value, 
-                agente_id: currentUser ? currentUser.id : null 
-            };
-
+            const payload = { cliente_nome: document.getElementById('v_cliente').value, whatsapp: document.getElementById('v_zap').value, servico_nome: document.getElementById('v_servico').value, valor: document.getElementById('v_valor').value, data_execucao: document.getElementById('v_data').value, agente_id: currentUser ? currentUser.id : null };
             try {
-                const res = await fetch('/api/registros?type=atendimentos', { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify(payload) 
-                });
-                if (!res.ok) throw new Error('Erro ao salvar no servidor');
+                const res = await fetch('/api/registros?type=atendimentos', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
                 const data = await res.json();
-                if(data.id) { 
-                    window.open(`/recibo.html?id=${data.id}`); 
-                    e.target.reset(); 
-                    document.getElementById('v_data').valueAsDate = new Date(); 
-                    loadVendas(); 
-                }
-            } catch (err) { alert("ERRO NO CADASTRO: " + err.message); }
+                if(data.id) { window.open(`/recibo.html?id=${data.id}`); e.target.reset(); document.getElementById('v_data').valueAsDate = new Date(); loadVendas(); }
+            } catch (err) { alert("ERRO: " + err.message); }
             finally { btn.disabled = false; btn.innerHTML = originalText; }
         });
 
-        // SALVAR LEAD
         document.getElementById('leadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = { nome: document.getElementById('l_nome').value, whatsapp: document.getElementById('l_zap').value, valor_estimado: document.getElementById('l_valor').value, notas: document.getElementById('l_notas').value, status: 'Novo' };
@@ -270,21 +249,12 @@
             document.getElementById('statMes').innerText = `R$ ${parseFloat(data.mesAtual).toLocaleString('pt-BR')}`;
             document.getElementById('statCount').innerText = data.porAgente.reduce((acc, curr) => acc + parseInt(curr.quantidade), 0);
             document.getElementById('statLeads').innerText = data.leadsCount;
-
             const ctxL = document.getElementById('mainChart').getContext('2d');
             if(window.myChartL) window.myChartL.destroy();
-            window.myChartL = new Chart(ctxL, {
-                type: 'line', data: { labels: data.grafico.map(g => g.mes), datasets: [{ label: 'Receita', data: data.grafico.map(g => g.total), borderColor: '#0ea5e9', fill: true, tension: 0.4 }] },
-                options: { responsive: true, plugins: { legend: { display: false } } }
-            });
-
+            window.myChartL = new Chart(ctxL, { type: 'line', data: { labels: data.grafico.map(g => g.mes), datasets: [{ label: 'Receita', data: data.grafico.map(g => g.total), borderColor: '#0ea5e9', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
             const ctxP = document.getElementById('pieChart').getContext('2d');
             if(window.myChartP) window.myChartP.destroy();
-            window.myChartP = new Chart(ctxP, {
-                type: 'doughnut',
-                data: { labels: data.porAgente.map(a => a.nome), datasets: [{ data: data.porAgente.map(a => a.total), backgroundColor: ['#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6'] }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+            window.myChartP = new Chart(ctxP, { type: 'doughnut', data: { labels: data.porAgente.map(a => a.nome), datasets: [{ data: data.porAgente.map(a => a.total), backgroundColor: ['#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6'] }] }, options: { responsive: true, maintainAspectRatio: false } });
         }
 
         async function loadVendas() {
