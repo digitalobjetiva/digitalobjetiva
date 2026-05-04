@@ -2,141 +2,100 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Recibo Oficial - Digital Objetiva</title>
+    <title>Recibo - Digital Objetiva</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Courier New', Courier, monospace; background: #f5f5f5; margin: 0; padding: 20px; color: #000; }
+        .receipt { background: #fff; width: 100%; max-width: 600px; margin: 0 auto; padding: 40px; box-shadow: 0 0 10px rgba(0,0,0,0.1); border: 1px solid #ddd; position: relative; }
         
-        body { font-family: 'Inter', sans-serif; padding: 40px; color: #0f172a; background: #fff; }
-        .receipt-container { 
-            max-width: 800px; 
-            margin: auto; 
-            padding: 40px; 
-            border: 2px solid #f1f5f9;
-            border-radius: 24px;
-        }
-        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px; }
-        .logo-box { display: flex; align-items: center; gap: 15px; }
-        .logo-box img { height: 50px; }
-        .logo-box span { font-size: 20px; font-weight: 800; color: #0ea5e9; }
-        
-        .company-details { text-align: right; font-size: 12px; color: #64748b; line-height: 1.5; }
-        
-        .receipt-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #0ea5e9; margin-bottom: 8px; }
-        .receipt-id { font-size: 36px; font-weight: 800; margin: 0 0 40px 0; }
-        
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 50px; }
-        .info-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
-        .label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
-        .value { font-size: 16px; font-weight: 600; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 24px; color: #000; letter-spacing: 2px; text-transform: uppercase; }
+        .header p { margin: 5px 0 0; font-size: 12px; color: #333; }
 
-        .description-box { 
-            background: #f8fafc; 
-            padding: 30px; 
-            border-radius: 16px; 
-            margin-bottom: 40px;
-        }
-        .description-text { font-size: 18px; font-weight: 600; color: #1e293b; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
+        .info-row b { text-transform: uppercase; font-size: 14px; }
         
-        .total-box { 
-            display: flex; justify-content: space-between; align-items: flex-end;
-            padding-top: 30px; border-top: 2px solid #0ea5e9;
-        }
-        .total-amount { font-size: 40px; font-weight: 800; color: #0ea5e9; }
+        .service-details { margin: 30px 0; border: 1px solid #000; padding: 15px; }
+        .service-details h2 { margin: 0 0 10px; font-size: 16px; border-bottom: 1px solid #000; padding-bottom: 5px; }
 
-        .footer { text-align: center; margin-top: 80px; font-size: 11px; color: #94a3b8; }
-        .signature-area { margin-top: 60px; text-align: center; }
-        .line { border-top: 1px solid #0f172a; width: 250px; margin: 0 auto 10px; }
-        
-        @media print {
-            .no-print { display: none; }
-            body { padding: 0; }
-            .receipt-container { border: none; }
-        }
-        
-        .btn-print {
-            background: #0ea5e9; color: white; padding: 12px 30px; border: none; border-radius: 12px;
-            cursor: pointer; font-weight: 800; margin-bottom: 40px; transition: 0.2s;
-        }
-        .btn-print:hover { background: #0284c7; transform: scale(1.05); }
+        .footer { margin-top: 50px; text-align: center; font-size: 12px; border-top: 1px solid #000; padding-top: 20px; }
+        .signature { margin-top: 40px; border-top: 1px solid #000; display: inline-block; width: 250px; padding-top: 5px; }
+
+        .actions { text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
+        .btn { padding: 12px 25px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; font-family: sans-serif; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-print { background: #333; color: #fff; }
+        .btn-whatsapp { background: #25d366; color: #fff; }
+
+        @media print { .actions { display: none; } body { background: #fff; padding: 0; } .receipt { box-shadow: none; border: none; } }
     </style>
 </head>
 <body>
-    <div class="no-print" style="text-align: center;">
-        <button class="btn-print" onclick="window.print()">IMPRIMIR COMPROVANTE</button>
-    </div>
 
-    <div class="receipt-container">
+    <div class="receipt" id="receiptArea">
         <div class="header">
-            <div class="logo-box">
-                <img src="Logo/logodo.png" alt="Logo">
-                <span>DIGITAL OBJETIVA</span>
-            </div>
-            <div class="company-details">
-                Digital Objetiva - Soluções Digitais<br>
-                WhatsApp: (21) 97070-7616<br>
-                Itaguaí - Rio de Janeiro<br>
-                digitalobjetiva.shop
+            <h1>Digital Objetiva</h1>
+            <p>SISTEMA DE GESTÃO E CONSULTORIA DIGITAL</p>
+            <p>digitalobjetiva@outlook.com | www.digitalobjetiva.shop</p>
+        </div>
+
+        <div class="info-row">
+            <span>RECIBO Nº: <b id="rec_id">...</b></span>
+            <span>DATA: <b id="rec_data">...</b></span>
+        </div>
+
+        <div class="info-row">
+            <span>CLIENTE: <b id="rec_cliente">...</b></span>
+        </div>
+
+        <div class="service-details">
+            <h2>DESCRIÇÃO DO SERVIÇO</h2>
+            <div style="font-size: 18px; margin-bottom: 10px;" id="rec_servico">...</div>
+            <div style="text-align: right; font-size: 22px; font-weight: bold;">
+                TOTAL: R$ <span id="rec_valor">0,00</span>
             </div>
         </div>
 
-        <div class="receipt-label">Recibo de Prestação de Serviço</div>
-        <h1 class="receipt-id" id="rec_id">#0000</h1>
-
-        <div class="info-grid">
-            <div class="info-item">
-                <div class="label">Contratante</div>
-                <div class="value" id="rec_cliente">---</div>
-            </div>
-            <div class="info-item">
-                <div class="label">Data de Execução</div>
-                <div class="value" id="rec_data">---</div>
-            </div>
-            <div class="info-item">
-                <div class="label">Agente Responsável</div>
-                <div class="value" id="rec_agente">---</div>
-            </div>
-            <div class="info-item">
-                <div class="label">Status</div>
-                <div class="value" style="color: #22c55e;">Pago / Finalizado</div>
-            </div>
-        </div>
-
-        <div class="label">Descrição dos Serviços Realizados</div>
-        <div class="description-box">
-            <div class="description-text" id="rec_servico">---</div>
-        </div>
-
-        <div class="total-box">
-            <div style="color: #64748b; font-weight: 600;">VALOR LÍQUIDO RECEBIDO</div>
-            <div class="total-amount" id="rec_valor">R$ 0,00</div>
-        </div>
-
-        <div class="signature-area">
-            <div class="line"></div>
-            <div style="font-size: 13px; font-weight: 600; color: #64748b;">Assinatura Digital Objetiva</div>
+        <div class="info-row">
+            <span>RESPONSÁVEL: <b id="rec_agente">...</b></span>
         </div>
 
         <div class="footer">
-            Este documento comprova legalmente a prestação do serviço e o recebimento do valor mencionado.<br>
-            Agradecemos a preferência. Digital Objetiva, simplificando sua vida digital.
+            <p>Agradecemos a preferência! Este documento é um comprovante de execução de serviço.</p>
+            <div class="signature">Assinatura Responsável</div>
         </div>
     </div>
 
+    <div class="actions">
+        <button class="btn btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir</button>
+        <a id="btnZap" href="#" target="_blank" class="btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Enviar p/ WhatsApp</a>
+    </div>
+
     <script>
-        const id = new URLSearchParams(window.location.search).get('id');
-        async function load() {
-            if (!id) return;
-            const res = await fetch(`/api/registros?id=${id}`);
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+
+        async function loadReceipt() {
+            if(!id) return;
+            const res = await fetch(`/api/registros?type=atendimentos&id=${id}`);
             const data = await res.json();
-            document.getElementById('rec_id').innerText = `#${String(data.id).padStart(4, '0')}`;
+            
+            document.getElementById('rec_id').innerText = data.id.toString().padStart(5, '0');
             document.getElementById('rec_data').innerText = new Date(data.data_execucao).toLocaleDateString('pt-BR');
             document.getElementById('rec_cliente').innerText = data.cliente_nome;
             document.getElementById('rec_servico').innerText = data.servico_nome;
-            document.getElementById('rec_agente').innerText = data.agente_nome || 'Central Objetiva';
-            document.getElementById('rec_valor').innerText = `R$ ${parseFloat(data.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('rec_valor').innerText = parseFloat(data.valor).toFixed(2).replace('.', ',');
+            document.getElementById('rec_agente').innerText = data.agente_nome || 'Digital Objetiva';
+
+            // Configurar Botão WhatsApp
+            const msg = encodeURIComponent(`Olá ${data.cliente_nome}! Segue o seu recibo da Digital Objetiva.\n\n📄 Serviço: ${data.servico_nome}\n💰 Valor: R$ ${parseFloat(data.valor).toFixed(2)}\n\nVisualize o recibo completo aqui: ${window.location.href}`);
+            const phone = data.whatsapp ? data.whatsapp.replace(/\D/g, '') : '';
+            document.getElementById('btnZap').href = `https://wa.me/55${phone}?text=${msg}`;
         }
-        load();
+
+        loadReceipt();
     </script>
+
 </body>
 </html>
