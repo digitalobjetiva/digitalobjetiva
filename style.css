@@ -327,35 +327,30 @@ img {
 
 /* ---- MOBILE ---- */
 @media screen and (max-width: 968px) {
-    .nav_item.dropdown .dropdown_menu {
-        padding-left: 1.2rem;
-        margin-top: .2rem;
-    }
-
+    /* Oculta o título "Manutenções" no mobile */
     .nav_item.dropdown .dropdown_toggle {
-        justify-content: space-between;
-        width: 100%;
+        display: none;
     }
 
-    /* No mobile hover não faz nada, só o JS controla */
-    .nav_item.dropdown:hover .dropdown_menu {
-        max-height: 0;
-        opacity: 0;
-        pointer-events: none;
+    /* Remove estilos de dropdown e exibe os itens como parte do menu principal */
+    .nav_item.dropdown .dropdown_menu {
+        max-height: none !important;
+        opacity: 1 !important;
+        pointer-events: all !important;
+        padding-left: 0;
+        margin-top: 0;
     }
 
-    .nav_item.dropdown:hover .dropdown_icon {
-        transform: none;
+    /* Estiliza os links do "submenu" para ficarem idênticos aos links principais */
+    .nav_item.dropdown .dropdown_menu a {
+        font-size: var(--h3-font-size);
+        padding: 0;
+        margin-bottom: var(--mb-2-5);
     }
 
-    .nav_item.dropdown.open .dropdown_menu {
-        max-height: 300px;
-        opacity: 1;
-        pointer-events: all;
-    }
-
-    .nav_item.dropdown.open .dropdown_icon {
-        transform: rotate(180deg);
+    /* Remove margin-bottom do próprio nav_item dropdown para não duplicar espaço */
+    .nav_item.dropdown {
+        margin-bottom: 0;
     }
 }
 
