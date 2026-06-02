@@ -282,108 +282,97 @@ img {
     position: relative;
 }
 
-/* Ícone chevron com transição */
 .dropdown_icon {
     margin-left: .4rem;
-    font-size: .75rem;
-    transition: transform .35s ease;
+    font-size: .7rem;
+    transition: transform .3s ease;
 }
 
-/* Menu dropdown oculto por padrão */
+/* Submenu oculto por padrão */
 .dropdown_menu {
     list-style: none;
     overflow: hidden;
     max-height: 0;
     opacity: 0;
-    transition: max-height .35s ease, opacity .3s ease;
+    transition: max-height .3s ease, opacity .25s ease;
     pointer-events: none;
 }
 
-.dropdown_menu li {
-    margin: 0;
-}
-
+/* Links do submenu — mesmo visual dos nav_link normais, só menores */
 .dropdown_menu a {
-    display: flex;
-    align-items: center;
-    gap: .6rem;
+    display: block;
     color: var(--text-color);
-    font-size: var(--small-font-size);
+    font-size: var(--normal-font-size);
     font-weight: var(--font-medium);
-    transition: color .3s, padding-left .3s;
-    padding: .5rem 0 .5rem .2rem;
-    border-left: 2px solid transparent;
+    transition: color .3s;
+    padding: .35rem 0;
 }
 
 .dropdown_menu a:hover {
     color: var(--first-color);
-    padding-left: .6rem;
-    border-left-color: var(--first-color);
 }
 
-/* Estado aberto */
-.nav_item.dropdown.open .dropdown_menu {
+/* Estado aberto (mobile via JS / desktop via hover) */
+.nav_item.dropdown.open .dropdown_menu,
+.nav_item.dropdown:hover .dropdown_menu {
     max-height: 300px;
     opacity: 1;
     pointer-events: all;
 }
 
-.nav_item.dropdown.open .dropdown_icon {
+.nav_item.dropdown.open .dropdown_icon,
+.nav_item.dropdown:hover .dropdown_icon {
     transform: rotate(180deg);
 }
 
-/* ---- MOBILE: acordeão dentro do menu lateral ---- */
+/* ---- MOBILE ---- */
 @media screen and (max-width: 968px) {
     .nav_item.dropdown .dropdown_menu {
-        padding-left: 1rem;
-        margin-top: .4rem;
-        border-left: 2px solid var(--glass-border);
+        padding-left: 1.2rem;
+        margin-top: .2rem;
     }
 
     .nav_item.dropdown .dropdown_toggle {
         justify-content: space-between;
         width: 100%;
     }
-}
 
-/* ---- DESKTOP: dropdown flutuante no hover ---- */
-@media screen and (min-width: 969px) {
-    .nav_item.dropdown .dropdown_menu {
-        position: absolute;
-        top: calc(100% + .75rem);
-        left: 0;
-        min-width: 200px;
-        background: rgba(8, 17, 31, 0.97);
-        border: 1px solid var(--glass-border);
-        border-radius: .65rem;
-        padding: .75rem 0;
-        backdrop-filter: blur(18px);
-        box-shadow: 0 16px 40px rgba(2, 6, 23, 0.6);
-        z-index: 200;
-    }
-
-    .dropdown_menu a {
-        padding: .65rem 1.25rem;
-        font-size: var(--normal-font-size);
-        border-left: none;
-    }
-
-    .dropdown_menu a:hover {
-        background: rgba(14, 165, 233, 0.1);
-        color: var(--first-color);
-        padding-left: 1.55rem;
-        border-left: none;
-    }
-
-    /* Abre ao passar o mouse no desktop */
+    /* No mobile hover não faz nada, só o JS controla */
     .nav_item.dropdown:hover .dropdown_menu {
+        max-height: 0;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .nav_item.dropdown:hover .dropdown_icon {
+        transform: none;
+    }
+
+    .nav_item.dropdown.open .dropdown_menu {
         max-height: 300px;
         opacity: 1;
         pointer-events: all;
     }
 
-    .nav_item.dropdown:hover .dropdown_icon {
+    .nav_item.dropdown.open .dropdown_icon {
         transform: rotate(180deg);
+    }
+}
+
+/* ---- DESKTOP: dropdown flutuante limpo ---- */
+@media screen and (min-width: 969px) {
+    .nav_item.dropdown .dropdown_menu {
+        position: absolute;
+        top: calc(100% + .5rem);
+        left: 0;
+        min-width: 180px;
+        padding: .5rem 0;
+        z-index: 200;
+    }
+
+    .dropdown_menu a {
+        padding: .4rem .2rem;
+        white-space: nowrap;
     }
 }
 
