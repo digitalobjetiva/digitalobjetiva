@@ -239,6 +239,9 @@ img {
     font-weight: var(--font-medium);
     transition: .3s;
     font-size: var(--h3-font-size);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
 .nav_cta {
@@ -1253,7 +1256,7 @@ img {
     
     .nav_list {
         display: flex;
-        gap: 1.45rem;
+        gap: .8rem;
         align-items: center;
     }
     
