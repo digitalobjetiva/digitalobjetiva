@@ -8,18 +8,35 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- Show Menu Mobile --- */
     const navMenu = document.getElementById('nav-menu'),
           navToggle = document.getElementById('nav-toggle'),
-          navLinks = document.querySelectorAll('.nav_link');
+          navLinks = document.querySelectorAll('.nav_link:not(.dropdown_toggle)');
 
     if(navToggle){
         navToggle.addEventListener('click', () =>{
             navMenu.classList.toggle('show-menu');
+            // Fecha o dropdown ao fechar o menu mobile
+            if (!navMenu.classList.contains('show-menu')) {
+                document.querySelectorAll('.nav_item.dropdown').forEach(d => d.classList.remove('open'));
+            }
         });
     }
 
-    // Fechar menu ao clicar em um link
+    // Fechar menu ao clicar em um link (exceto o toggle do dropdown)
     navLinks.forEach(n => n.addEventListener('click', () => {
         navMenu.classList.remove('show-menu');
+        document.querySelectorAll('.nav_item.dropdown').forEach(d => d.classList.remove('open'));
     }));
+
+    /* --- Dropdown Manutenções (acordeão mobile / hover desktop) --- */
+    document.querySelectorAll('.dropdown_toggle').forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const parentItem = toggle.closest('.nav_item.dropdown');
+            // No mobile, alterna a classe open; no desktop, o CSS hover cuida
+            if (window.innerWidth <= 968) {
+                parentItem.classList.toggle('open');
+            }
+        });
+    });
 
 
     /* --- Scroll Header Background --- */

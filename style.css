@@ -277,6 +277,116 @@ img {
     right: 0;
 }
 
+/* --- Dropdown Manutenções --- */
+.nav_item.dropdown {
+    position: relative;
+}
+
+/* Ícone chevron com transição */
+.dropdown_icon {
+    margin-left: .4rem;
+    font-size: .75rem;
+    transition: transform .35s ease;
+}
+
+/* Menu dropdown oculto por padrão */
+.dropdown_menu {
+    list-style: none;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height .35s ease, opacity .3s ease;
+    pointer-events: none;
+}
+
+.dropdown_menu li {
+    margin: 0;
+}
+
+.dropdown_menu a {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    color: var(--text-color);
+    font-size: var(--small-font-size);
+    font-weight: var(--font-medium);
+    transition: color .3s, padding-left .3s;
+    padding: .5rem 0 .5rem .2rem;
+    border-left: 2px solid transparent;
+}
+
+.dropdown_menu a:hover {
+    color: var(--first-color);
+    padding-left: .6rem;
+    border-left-color: var(--first-color);
+}
+
+/* Estado aberto */
+.nav_item.dropdown.open .dropdown_menu {
+    max-height: 300px;
+    opacity: 1;
+    pointer-events: all;
+}
+
+.nav_item.dropdown.open .dropdown_icon {
+    transform: rotate(180deg);
+}
+
+/* ---- MOBILE: acordeão dentro do menu lateral ---- */
+@media screen and (max-width: 968px) {
+    .nav_item.dropdown .dropdown_menu {
+        padding-left: 1rem;
+        margin-top: .4rem;
+        border-left: 2px solid var(--glass-border);
+    }
+
+    .nav_item.dropdown .dropdown_toggle {
+        justify-content: space-between;
+        width: 100%;
+    }
+}
+
+/* ---- DESKTOP: dropdown flutuante no hover ---- */
+@media screen and (min-width: 969px) {
+    .nav_item.dropdown .dropdown_menu {
+        position: absolute;
+        top: calc(100% + .75rem);
+        left: 0;
+        min-width: 200px;
+        background: rgba(8, 17, 31, 0.97);
+        border: 1px solid var(--glass-border);
+        border-radius: .65rem;
+        padding: .75rem 0;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 16px 40px rgba(2, 6, 23, 0.6);
+        z-index: 200;
+    }
+
+    .dropdown_menu a {
+        padding: .65rem 1.25rem;
+        font-size: var(--normal-font-size);
+        border-left: none;
+    }
+
+    .dropdown_menu a:hover {
+        background: rgba(14, 165, 233, 0.1);
+        color: var(--first-color);
+        padding-left: 1.55rem;
+        border-left: none;
+    }
+
+    /* Abre ao passar o mouse no desktop */
+    .nav_item.dropdown:hover .dropdown_menu {
+        max-height: 300px;
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .nav_item.dropdown:hover .dropdown_icon {
+        transform: rotate(180deg);
+    }
+}
+
 /* Scroll header bg change */
 .scroll-header {
     background: rgba(8, 17, 31, 0.92);
