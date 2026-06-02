@@ -329,28 +329,41 @@ img {
 @media screen and (max-width: 968px) {
     /* Oculta o título "Manutenções" no mobile */
     .nav_item.dropdown .dropdown_toggle {
-        display: none;
+        display: none !important;
     }
 
-    /* Remove estilos de dropdown e exibe os itens como parte do menu principal */
+    /* O submenu vira a própria lista principal */
     .nav_item.dropdown .dropdown_menu {
         max-height: none !important;
         opacity: 1 !important;
         pointer-events: all !important;
-        padding-left: 0;
-        margin-top: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
     }
 
-    /* Estiliza os links do "submenu" para ficarem idênticos aos links principais */
+    /* Cada item de lista vira um nav_item */
+    .nav_item.dropdown .dropdown_menu li {
+        margin-bottom: var(--mb-2-5) !important;
+    }
+
+    /* Cada link vira um nav_link idêntico aos outros */
     .nav_item.dropdown .dropdown_menu a {
-        font-size: var(--h3-font-size);
-        padding: 0;
-        margin-bottom: var(--mb-2-5);
+        color: var(--text-color) !important;
+        font-weight: var(--font-medium) !important;
+        font-size: var(--h3-font-size) !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        border: none !important;
     }
 
-    /* Remove margin-bottom do próprio nav_item dropdown para não duplicar espaço */
+    /* Remove a margem do container pai para não sobrar espaço */
     .nav_item.dropdown {
-        margin-bottom: 0;
+        margin-bottom: 0 !important;
     }
 }
 
