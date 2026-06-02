@@ -1487,3 +1487,88 @@ img {
     font-size: var(--small-font-size);
     color: var(--text-color);
 }
+
+/* --- Dropdown Menu (Navbar Submenu) --- */
+.dropdown {
+    position: relative;
+}
+
+.dropdown_menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(15px);
+    background: rgba(17, 28, 46, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: .75rem;
+    padding: .85rem 0;
+    min-width: 230px;
+    box-shadow: var(--premium-shadow);
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s ease-out;
+    z-index: var(--z-fixed);
+}
+
+.dropdown_menu li {
+    margin-bottom: 0 !important;
+}
+
+.dropdown_menu li a {
+    display: block;
+    padding: .65rem 1.25rem;
+    font-size: .88rem;
+    color: var(--text-color-light);
+    transition: .3s;
+    text-align: left;
+}
+
+.dropdown_menu li a:hover,
+.dropdown_menu li a.active {
+    background: rgba(14, 165, 233, 0.12);
+    color: var(--first-color);
+}
+
+.dropdown_icon {
+    font-size: .7rem;
+    margin-left: .25rem;
+    transition: .3s;
+}
+
+/* Hover dropdown triggers */
+.dropdown:hover .dropdown_menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.dropdown:hover .dropdown_icon {
+    transform: rotate(180deg);
+}
+
+/* Mobile Dropdown styles (max-width: 968px) */
+@media screen and (max-width: 968px) {
+    .dropdown_menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        background: rgba(255, 255, 255, 0.02);
+        border: none;
+        border-left: 2px solid var(--first-color);
+        margin: .5rem 0 .5rem 1rem;
+        padding: .5rem 0;
+        box-shadow: none;
+        min-width: auto;
+    }
+    
+    .dropdown_menu li a {
+        padding: .5rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .dropdown:hover .dropdown_menu {
+        transform: none;
+    }
+}
